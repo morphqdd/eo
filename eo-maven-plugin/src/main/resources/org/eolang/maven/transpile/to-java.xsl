@@ -35,6 +35,17 @@
     <xsl:param name="n" as="xs:string"/>
     <xsl:value-of select="concat('EO', replace(replace(translate(translate(replace($n, '_', '__'), '-', '_'), '@', $eo:phi), $eo:alpha, '_'), '\$', '\$EO'))"/>
   </xsl:function>
+  <!--
+  @todo #6091:60min Fix Saxon 13.0 multi-argument parameter mis-binding here too.
+  "eo:suffix" (s1, s2), "eo:class-name" (n, alt), "eo:attr-name" (n, wrap),
+  "eo:fqn-start" (first, rho) and "eo:method" (base, mtd) below all take
+  two arguments and run through the same shared, threaded Xsline pipeline
+  as "eo:locator" in "set-locators.xsl", which Saxon-HE 13.0 occasionally
+  mis-binds under concurrent use (see #6091). Restructure each function
+  down to a single argument, the same way "eo:locator" and
+  "eo:original-name" were already fixed, or otherwise avoid multi-argument
+  "xsl:function" declarations across this file.
+  -->
   <!-- Get object name with suffix -->
   <xsl:function name="eo:suffix" as="xs:string">
     <xsl:param name="s1"/>

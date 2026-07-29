@@ -8,6 +8,15 @@
   Performs the reverse operation of "/org/eolang/parser/mandatory-as.xsl"
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
+  <!--
+  @todo #6091:30min Fix Saxon 13.0 multi-argument parameter mis-binding here too.
+  "eo:all-alphas" below takes two arguments ("index", "elem") and runs
+  through the same shared, threaded Xsline pipeline as "eo:locator" in
+  "set-locators.xsl", which Saxon-HE 13.0 occasionally mis-binds under
+  concurrent use (see #6091). Restructure the function down to a single
+  argument, the same way "eo:locator" and "eo:original-name" were already
+  fixed, or otherwise avoid a multi-argument "xsl:function" declaration.
+  -->
   <xsl:function name="eo:all-alphas">
     <xsl:param name="index"/>
     <xsl:param name="elem"/>

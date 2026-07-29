@@ -32,6 +32,18 @@
     <xsl:sequence select="substring-after($base, substring-before($base, $auto))"/>
   </xsl:function>
   <!--
+  @todo #6091:90min Fix Saxon 13.0 multi-argument parameter mis-binding here too.
+  "eo:alias-target" ("target", "seen") and "eo:recursive", "eo:dispatched",
+  "eo:piped", "eo:arg-applied", "eo:nested-applied", "eo:reapplied",
+  "eo:references", "eo:multi-referenced" and "eo:unreferenced" (all
+  "target", "name") below run through the same shared, threaded Xsline
+  pipeline as "eo:locator" in "set-locators.xsl", which Saxon-HE 13.0
+  occasionally mis-binds under concurrent use (see #6091). Restructure each
+  function down to a single argument, the same way "eo:locator" and
+  "eo:original-name" were already fixed, or otherwise avoid multi-argument
+  "xsl:function" declarations across this file.
+  -->
+  <!--
   The based `&gt;&gt; name` handle that `$target` ultimately denotes, chasing a
   chain of bare-reference aliases to its end. A handle whose value is a plain
   reference to another auto-named handle (`p &gt;&gt; r` over `E0- &gt;&gt; p`)

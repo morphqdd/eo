@@ -270,6 +270,16 @@
     <xsl:sequence select="if (exists($binding) and not($ref is $binding) and not($ref/ancestor::o[. is $binding]) and not(eo:moniker-refs($binding)[1] is $ref)) then $binding else ()"/>
   </xsl:function>
   <!--
+  @todo #6091:30min Fix Saxon 13.0 multi-argument parameter mis-binding here too.
+  "eo:shadowed" and "eo:handle-base" below both take two arguments ("ref",
+  "binding") and run through the same shared, threaded Xsline pipeline as
+  "eo:locator" in "set-locators.xsl", which Saxon-HE 13.0 occasionally
+  mis-binds under concurrent use (see #6091). Restructure each function
+  down to a single argument, the same way "eo:locator" and
+  "eo:original-name" were already fixed, or otherwise avoid multi-argument
+  "xsl:function" declarations here.
+  -->
+  <!--
   Whether the bare name of `$binding` would read as something else at `$ref`:
   some formation between the reference and the one that owns the handle declares
   that same readable name, so the parser's search — which stops at the nearest

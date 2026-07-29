@@ -67,6 +67,17 @@
     <xsl:sequence select="substring-after($base, substring-before($base, $auto))"/>
   </xsl:function>
   <!--
+  @todo #6091:60min Fix Saxon 13.0 multi-argument parameter mis-binding here too.
+  "eo:recursive", "eo:references", "eo:multi-referenced", "eo:unreferenced",
+  "eo:nested-referenced", "eo:applied-receiver" and "eo:reapplied" below all
+  take two arguments ("target", "name") and run through the same shared,
+  threaded Xsline pipeline as "eo:locator" in "set-locators.xsl", which
+  Saxon-HE 13.0 occasionally mis-binds under concurrent use (see #6091).
+  Restructure each function down to a single argument, the same way
+  "eo:locator" and "eo:original-name" were already fixed for this file's
+  neighbors, or otherwise avoid multi-argument "xsl:function" declarations.
+  -->
+  <!--
   Whether the auto-named abstract "$target" transitively references its
   own name "$name", i.e. its subtree holds a reference that resolves back
   to "$name". Such an abstract is recursive and is never inlined by

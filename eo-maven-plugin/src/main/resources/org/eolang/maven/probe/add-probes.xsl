@@ -38,6 +38,15 @@
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
+  <!--
+  @todo #6091:30min Fix Saxon 13.0 multi-argument parameter mis-binding here too.
+  "eo:contains-any-of" below takes two arguments ("original", "chars") and
+  runs through the same shared, threaded Xsline pipeline as "eo:locator" in
+  "set-locators.xsl", which Saxon-HE 13.0 occasionally mis-binds under
+  concurrent use (see #6091). Restructure the function down to a single
+  argument, the same way "eo:locator" and "eo:original-name" were already
+  fixed, or otherwise avoid a multi-argument "xsl:function" declaration.
+  -->
   <xsl:function name="eo:contains-any-of" as="xs:boolean">
     <xsl:param name="original" as="xs:string"/>
     <xsl:param name="chars" as="xs:string*"/>
