@@ -16,11 +16,18 @@ import java.util.List;
  * Φ.bytes} wrapper, STAR to {@code Φ.tuple} with {@code @star=''}, and
  * so on as more shapes land.</p>
  *
- * <p>Used both as the line's head and as horizontal argument slots; the
- * {@link Head} role is just a {@link Value} promoted to head position
- * for readability. *
+ * <p>Used both as the line's head and as horizontal argument slots — a
+ * head is just a {@link Value} promoted to head position for
+ * readability.</p>
  *
  * @since 0.1
+ * @todo #7016:60min Stop suppressing PMD.DataClass by moving the
+ *  emission decisions callers currently make from kind()/raw()/etc.
+ *  onto Value itself. Emissions and the Ln* line shapes (105 call
+ *  sites across 14 files as of this writing) read every accessor and
+ *  decide the XMIR shape on Value's behalf; that logic belongs here.
+ *  Out of scope for this PR (too large a diff for one change); see
+ *  https://github.com/objectionary/eo/issues/7016.
  */
 @SuppressWarnings("PMD.DataClass")
 final class Value {
