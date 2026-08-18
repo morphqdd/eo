@@ -12,10 +12,9 @@ import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.TrDefault;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Set;
 import java.util.function.UnaryOperator;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.text.StringEscapeUtils;
@@ -53,6 +52,11 @@ import org.xml.sax.SAXParseException;
 @Execution(ExecutionMode.SAME_THREAD)
 @ExtendWith(LogProgress.class)
 final class EoSyntaxTest {
+
+    /**
+     * Line-break splitter for {@link #naughty()}.
+     */
+    private static final Pattern EOL = Pattern.compile("\\R");
 
     @Test
     void parsesSimpleCode() throws Exception {
@@ -755,10 +759,14 @@ final class EoSyntaxTest {
     /**
      * Prepare naughty strings.
      * @return Stream of strings
-     * @throws IOException if I/O fails
+     * @throws Exception if reading the resource fails
      */
-    private static Stream<Arguments> naughty() throws IOException {
-        return Files.readAllLines(Paths.get("target/blns.txt")).stream().filter(s -> !s.isEmpty())
+    private static Stream<Arguments> naughty() throws Exception {
+        return Stream.of(
+            EoSyntaxTest.EOL.split(
+                new TextOf(new ResourceOf("org/eolang/parser/blns.txt")).asString(), -1
+            )
+        ).filter(s -> !s.isEmpty())
             .map(StringEscapeUtils::escapeJava)
             .map(Arguments::of);
     }
