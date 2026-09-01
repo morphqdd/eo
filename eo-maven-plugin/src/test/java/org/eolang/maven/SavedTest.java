@@ -95,6 +95,17 @@ final class SavedTest {
     }
 
     @Test
+    void savesToAShortFilename(@Mktmp final Path temp) throws Exception {
+        final Path target = temp.resolve("x");
+        new Saved("short-8", target).value();
+        MatcherAssert.assertThat(
+            "a name shorter than three characters must be saved too, but it wasnt",
+            Files.readString(target, StandardCharsets.UTF_8),
+            Matchers.equalTo("short-8")
+        );
+    }
+
+    @Test
     void overwritesContentOfExistingFile(@Mktmp final Path temp) throws Exception {
         final Path target = temp.resolve("twice.txt");
         new Saved("first-7", target).value();
